@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Video</title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+        #player {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="content">
+    <div id="player"></div>
+
+    <div class="web-cam">
+        <video id="video" class="hidden"></video>
+        <canvas id="canvas" class="hidden"></canvas>
+    </div>
+</div>
+
+<script type="application/javascript">
+    var error = false;
+
+    var WebCam = {
+        // The width and height of the captured photo. We will set the
+        // width to the value defined here, but the height will be
+        // calculated based on the aspect ratio of the input stream.
+
+        width: 1024,    // We will scale the photo width to this
+        height: 0,     // This will be computed based on the input stream
+
+        // |streaming| indicates whether or not we're currently streaming
+        // video from the camera. Obviously, we start at false.
+
+        streaming: false,
+
+        // The various HTML elements we need to configure or control. These
+        // will be set by the initialize() function.
+
+        video: null,
+        canvas: null,
+
+        initialize: function() {
+            WebCam.video = document.getElementById('video');
+            WebCam.canvas = document.getElementById('canvas');
+
+            navigator.getMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+
+            navigator.getMedia(
+                    {
+                        video: {
+                            width: { min: 640, ideal: 1280, max: 1920 },
+                            height: { min: 360, ideal: 720, max: 1080 }
+                        },
+                        audio: false
+                    },
+                    function (stream) {
+                        if (navigator.mozGetUserMedia) {
+                            WebCam.video.mozSrcObject = stream;
+                        } else {
+                            var vendorURL = window.URL || window.webkitURL;
+                            WebCam.video.src = vendorURL.createObjectURL(stream);
+                        }
+                        WebCam.video.play();
+                    },
+                    function (err) {
+                        error = true;
+                        console.log("Error (getMedia): " + err);
+                    }
+            );
+
+            WebCam.video.addEventListener('canplay', function (event) {
+                if (!WebCam.streaming) {
+                    WebCam.height = WebCam.video.videoHeight / (WebCam.video.videoWidth / WebCam.width);
+
+                    // Firefox currently has a bug where the height can't be read from
+                    // the video, so we will make assumptions if this happens.
+
+                    if (isNaN(WebCam.height)) {
+                        WebCam.height = WebCam.width / (4 / 3);
+                    }
+
+                    var widthString = Number.toString(WebCam.width);
+                    var heightString = Number.toString(WebCam.height);
+
+                    WebCam.video.setAttribute('width', widthString);
+                    WebCam.video.setAttribute('height', heightString);
+                    WebCam.canvas.setAttribute('width', widthString);
+                    WebCam.canvas.setAttribute('height', heightString);
+                    WebCam.streaming = true;
+                }
+            }, false);
+        },
+
+        // Capture a photo by fetching the current contents of the video
+        // and drawing it into a canvas, then converting that to a PNG
+        // format data URL. By drawing it on an offscreen canvas and then
+        // drawing that to the screen, we can change its size and/or apply
+        // other changes before drawing it.
+
+        takeImage: function() {
+            var context = WebCam.canvas.getContext('2d');
+            if (WebCam.width > 0 && WebCam.height > 0) {
+                WebCam.canvas.width = WebCam.width;
+                WebCam.canvas.height = WebCam.height;
+                context.drawImage(WebCam.video, 0, 0, WebCam.width, WebCam.height);
+
+                return WebCam.canvas.toDataURL('image/jpeg');
+            } else {
+                return null;
+            }
+        }
+    };
+
+    var Ajax = {
+        request: function(ops) {
+            if(typeof ops == 'string') ops = { url: ops };
+            ops.url = ops.url || '';
+            ops.method = ops.method || 'get';
+            ops.data = ops.data || {};
+            var api = {
+                host: {},
+                process: function(ops) {
+                    var self = this;
+                    this.xhr = null;
+                    if(window.ActiveXObject) { this.xhr = new ActiveXObject('Microsoft.XMLHTTP'); }
+                    else if(window.XMLHttpRequest) { this.xhr = new XMLHttpRequest(); }
+                    if(this.xhr) {
+                        this.xhr.onreadystatechange = function() {
+                            if(self.xhr.readyState == 4 && self.xhr.status == 200) {
+                                var result = self.xhr.responseText;
+                                if(ops.json === true && typeof JSON != 'undefined') {
+                                    result = JSON.parse(result);
+                                }
+                                self.doneCallback && self.doneCallback.apply(self.host, [result, self.xhr]);
+                            } else if(self.xhr.readyState == 4) {
+                                self.failCallback && self.failCallback.apply(self.host, [self.xhr]);
+                            }
+                            self.alwaysCallback && self.alwaysCallback.apply(self.host, [self.xhr]);
+                        }
+                    }
+                    if(ops.method == 'get') {
+                        this.xhr.open('GET', ops.url + getParams(ops.data, ops.url), true);
+                    } else {
+                        this.xhr.open(ops.method, ops.url, true);
+                        this.setHeaders({
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-type': 'application/json'
+                        });
+                    }
+                    if(ops.headers && typeof ops.headers == 'object') {
+                        this.setHeaders(ops.headers);
+                    }
+                    setTimeout(function() {
+                        ops.method == 'get' ? self.xhr.send() : self.xhr.send(JSON.stringify(ops.data));
+                    }, 20);
+                    return this;
+                },
+                done: function(callback) {
+                    this.doneCallback = callback;
+                    return this;
+                },
+                fail: function(callback) {
+                    this.failCallback = callback;
+                    return this;
+                },
+                always: function(callback) {
+                    this.alwaysCallback = callback;
+                    return this;
+                },
+                setHeaders: function(headers) {
+                    for(var name in headers) {
+                        if (headers.hasOwnProperty(name)) {
+                            this.xhr && this.xhr.setRequestHeader(name, headers[name]);
+                        }
+                    }
+                }
+            };
+            return api.process(ops);
+        }
+    };
+
+    window.addEventListener('load', WebCam.initialize, false);
+
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // This function creates an <iframe> (and YouTube player)
+    // after the API code downloads.
+    var player;
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            width: '100%',
+            height: '100%',
+            videoId: '{{ .VideoId }}',
+            playerVars: {
+                'origin': 'http://localhost:8082',
+                'controls': 2,
+                'rel': 0
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    var ready = false;
+    var started = false;
+    var stopped = false;
+    var endTime = {{ .EndTime }};
+
+    var viewId = '{{ .ViewId }}';
+    var successCount = 0;
+    var failureCount = 0;
+    var timeout = 0;
+
+    function processWebCam() {
+        if (!(error || Date.now() >= endTime || player === undefined || player === null)) {
+            if (started && !stopped) {
+                timeout = setTimeout(processWebCam, 3000);
+                var imageNull = false;
+                var imageData = WebCam.takeImage();
+                if (imageData === null) {
+                    imageNull = true;
+                    imageData = '';
+                }
+
+                Ajax
+                        .request({
+                            url: '/video/{{ .VideoId }}/data',
+                            method: 'post',
+                            data: {
+                                viewId: viewId,
+                                time: player.getCurrentTime(),
+                                state: player.getPlayerState(),
+                                quality: player.getPlaybackQuality(),
+                                imageNull: imageNull,
+                                imageData: imageData
+                            },
+                            json: true
+                        })
+                        .done(function(result) {
+                            successCount += 1;
+                        })
+                        .fail(function(xhr) {
+                            failureCount += 1;
+                        })
+                        .always(function(xhr) {});
+            } else if (!ready || !started) {
+                timeout = setTimeout(processWebCam, 3000);
+            }
+        }
+    }
+
+    var initialTime = Math.random() * 3000;
+
+    function onPlayerReady() {
+        timeout = setTimeout(processWebCam, initialTime);
+        ready = true
+    }
+
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !started) {
+            started = true;
+        } else if (event.data == YT.PlayerState.ENDED && !stopped) {
+            stopped = true;
+        }
+    }
+</script>
+</body>
+
+</html>

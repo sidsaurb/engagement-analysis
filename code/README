@@ -1,0 +1,33 @@
+CS654 Project: Emotion and Engagement Analysis
+===============================================
+
+# Code
+-------
+
+- The video watching service code is present in the folder `/veea`
+- The dashboard service code is present in the folder `/veead`
+- The ping monitoring service code is present in file `/scripts/ping_monitor.py`
+- The image processing service and monitoring service is present in the folder `/image_processing`
+- The sql schema used is present in file `/scripts/sql_init.sql`
+- The nginx configuration file is `/conf/nginx.conf`
+
+# Running
+----------
+
+- Image processing service is already running on AWS. CrowdSight doesn't allow new SDK keys, hence a new instance cannot be initiated. Key is only valid till the 26th April 
+- Copy folders `/veea` and `/veead` to `$GOPATH/github.com/gpahal/' folder
+- Run `go install` in both the directories and install relevant dependencies
+- Run the sql script file as the root user of the mysql server. Command is  `mysql -uroot -p < ./scripts/sql_init.sql`
+- Run the commands
+	- `$GOPATH/bin/veea`
+	- `$GOPATH/bin/veea -other`
+	- `$GOPATH/bin/veead`
+- Start nginx with the given configuration file
+- Start the monitoring service with `python3 ./scripts/ping_monitor.py`
+- Dashboard can be viewed at `http://localhost:8083` with user `admin` and password `admin`
+- Videos are available at `http://locallhost:8082`. Registration is required
+
+# Acknowledgements (3rd party software)
+----------------------------------------
+
+- CrowdSight SDK for providing emotion analysis of images

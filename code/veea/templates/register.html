@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Video - Register</title>
+    <link rel="stylesheet" href="/static/css/semantic.min.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+
+<body>
+<div class="ui container">
+    {{ if .Message }}<div class="ui negative message"><div class="header">{{ .Message }}</div></div>{{ end }}
+    <div class="ui attached message">
+        <div class="header">
+            Register
+        </div>
+        <p>Register with your chosen username, full name and password</p>
+    </div>
+    <form class="ui form attached fluid segment" method="post">
+        <div class="field">
+            <label>Username</label>
+            <input type="text" name="username" id="username" placeholder="Username" required>
+        </div>
+        <div class="field">
+            <label>Full Name</label>
+            <input type="text" name="fullname" id="fullname" placeholder="Full Name" required>
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" id="password" placeholder="Password" required>
+        </div>
+        <div class="field">
+            <label>Repeat Password</label>
+            <input type="password" name="repassword" id="repassword" placeholder="Repeat Password" required>
+        </div>
+        <button class="ui blue button" type="submit">Register</button>
+    </form>
+    <div class="ui bottom attached warning message">
+        Already registered? &nbsp; <a href="{{.Path}}/login">Login here.</a>
+    </div>
+</div>
+
+<script src="/static/js/semantic.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Video Admin | Dashboard Single</title>
+
+    <!-- Bootstrap core CSS -->
+
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="/static/fonts/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/animate.min.css" rel="stylesheet">
+
+    <!-- Custom styling plus plugins -->
+    <link href="/static/css/custom.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/maps/jquery-jvectormap-2.0.3.css" />
+    <link href="/static/css/icheck/flat/green.css" rel="stylesheet" />
+    <link href="/static/css/floatexamples.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        #player-parent {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/nprogress.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body class="nav-md">
+
+<div class="container body">
+
+    <div class="main_container">
+
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="#" class="site_title"><i class="fa fa-paw"></i> <span>Video Admin</span></a>
+                </div>
+                <div class="clearfix"></div>
+
+                <!-- menu profile quick info -->
+                <div class="profile">
+                    <div class="profile_pic">
+                        <img src="/static/images/user.png" alt="User Image" class="img-circle profile_img">
+                    </div>
+                    <div class="profile_info">
+                        <span>Welcome,</span>
+                        <h2>{{ .Account.FullName }}</h2>
+                    </div>
+                </div>
+                <!-- /menu profile quick info -->
+
+                <br />
+
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <br>
+                    <br>
+                    <br>
+                    <hr>
+                    <div class="menu_section">
+                        <ul class="nav side-menu">
+                            <li><a href="/admin/videos"><i class="fa fa-video-camera"></i> Videos </a></li>
+                            <li><a href="/admin/users"><i class="fa fa-users"></i> Users </a></li>
+                        </ul>
+                    </div>
+
+                </div>
+                <!-- /sidebar menu -->
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+
+            <div class="nav_menu">
+                <nav class="" role="navigation">
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <img src="/static/images/user.png" alt="">{{ .Account.FullName }}
+                                <span class=" fa fa-angle-down"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                <li><a href="javascript:;">  Account</a></li>
+                                <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+        <!-- /top navigation -->
+
+
+        <!-- page content -->
+        <div class="right_col" role="main" id="main">
+
+            <!-- top tiles -->
+            <div class="row tile_count hidden-class">
+                <div class="animated flipInY col-md-offset-1 col-md-2 col-xs-4 tile_stats_count">
+                    <div class="left"></div>
+                    <div class="right">
+                        <span class="count_top"><i class="fa fa-user"></i> Total Views</span>
+                        <div class="count" id="top-1">NA</div>
+                    </div>
+                </div>
+                <div class="animated flipInY col-md-2 col-xs-4 tile_stats_count">
+                    <div class="left"></div>
+                    <div class="right">
+                        <span class="count_top"><i class="fa fa-user-plus"></i> Unique Visitors</span>
+                        <div class="count" id="top-2">NA</div>
+                    </div>
+                </div>
+                <div class="animated flipInY col-md-2 col-xs-4 tile_stats_count">
+                    <div class="left"></div>
+                    <div class="right">
+                        <span class="count_top"><i class="fa fa-clock-o"></i> Average time</span>
+                        <div class="count" id="top-3">NA</div>
+                    </div>
+                </div>
+                <div class="animated flipInY col-md-offset-0 col-md-2 col-xs-offset-2 col-xs-4 tile_stats_count">
+                    <div class="left"></div>
+                    <div class="right">
+                        <span class="count_top"><i class="fa fa-eye"></i> Average Engagement</span>
+                        <div class="count" id="top-4">NA</div>
+                    </div>
+                </div>
+                <div class="animated flipInY col-md-2 col-xs-4 tile_stats_count">
+                    <div class="left"></div>
+                    <div class="right">
+                        <span class="count_top"><i class="fa fa-child"></i> Positive Mood</span>
+                        <div class="count" id="top-5">NA</div>
+                    </div>
+                </div>
+            </div>
+            <!-- /top tiles -->
+
+            <div class="row hidden-class">
+                <!-- gender -->
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Gender division</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li></li>
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                                <li><a class="refresh-link"><i class="fa fa-refresh"></i></a></li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content2">
+                            <div id="graph-gender" style="width:100%; height:300px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- age -->
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Age group division</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li></li>
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                                <li><a class="refresh-link"><i class="fa fa-refresh"></i></a></li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content2">
+                            <div id="graph-age" style="width:100%; height:300px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- emotion -->
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Overall emotions</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li></li>
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                                <li><a class="refresh-link"><i class="fa fa-refresh"></i></a></li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content2">
+                            <div id="graph-emotion" style="width:100%; height:300px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row hidden-class">
+                <div class="col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Video Instant Analytics</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li></li>
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                                <li><a class="refresh-link"><i class="fa fa-refresh"></i></a></li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content2" id="player-parent">
+                            <div>
+                                <div class="row"><div class="col-xs-12">
+                                    <div id="player"></div>
+                                </div></div>
+
+                                <div class="row"><div class="col-xs-12">
+                                    <h4>Emotions</h4>
+                                    <div class="player-graph" id="graph-instant-emotion" style="height:250px;"></div>
+                                </div></div>
+
+                                <div class="row"><div class="col-xs-12">
+                                    <h4>Mood</h4>
+                                    <div class="player-graph" id="graph-instant-mood" style="height:150px;"></div>
+                                </div></div>
+
+                                <div class="row"><div class="col-xs-12">
+                                    <h4>Engagement</h4>
+                                    <div class="player-graph" id="graph-instant-engagement" style="height:150px;"></div>
+                                </div></div>
+
+                                <div class="row"><div class="col-xs-12">
+                                    <h4>Viewed Count</h4>
+                                    <div class="player-graph" id="graph-instant-viewed-count" style="height:150px;"></div>
+                                </div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+    </div>
+
+</div>
+
+<div id="custom_notifications" class="custom-notifications dsp_none">
+    <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
+    </ul>
+    <div class="clearfix"></div>
+    <div id="notif-group" class="tabbed_notifications"></div>
+</div>
+
+<script src="/static/js/bootstrap.min.js"></script>
+
+<!-- bootstrap progress js -->
+<script src="/static/js/progressbar/bootstrap-progressbar.min.js"></script>
+<!-- icheck -->
+<script src="/static/js/icheck/icheck.min.js"></script>
+<!-- chart js -->
+<script src="/static/js/chartjs/chart.min.js"></script>
+
+<script src="/static/js/custom.js"></script>
+
+<!-- flot js -->
+<script type="text/javascript" src="/static/js/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="/static/js/flot/jquery.flot.pie.js"></script>
+<script type="text/javascript" src="/static/js/flot/jquery.flot.orderBars.js"></script>
+<script type="text/javascript" src="/static/js/flot/jquery.flot.time.min.js"></script>
+<script type="text/javascript" src="/static/js/flot/date.js"></script>
+<script type="text/javascript" src="/static/js/flot/jquery.flot.spline.js"></script>
+<script type="text/javascript" src="/static/js/flot/jquery.flot.stack.js"></script>
+<script type="text/javascript" src="/static/js/flot/curvedLines.js"></script>
+<script type="text/javascript" src="/static/js/flot/jquery.flot.resize.js"></script>
+
+<!-- moris js -->
+<script src="/static/js/moris/raphael-min.js"></script>
+<script src="/static/js/moris/morris.min.js"></script>
+
+<!-- echart -->
+<script src="/static/js/echart/echarts-all.js"></script>
+<script src="/static/js/echart/green.js"></script>
+
+<script>
+    var player;
+    var ready = false;
+    var errorOnce = false;
+    var videoDuration = -1;
+
+    var videoWidth = 800;
+    var videoHeight = (videoWidth * 9) / 16;
+
+    var diff = 32;
+
+    function init() {
+        var width = $('#player-parent').width();
+        videoWidth = width - 200;
+        if (width > 1000) {
+            videoWidth = 800;
+        }
+
+        $('#player').css("margin-left", (diff + 8).toString() + "px");
+
+        videoHeight = (videoWidth * 9) / 16;
+
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        $('#graph-instant-emotion').width(videoWidth + 2 * diff);
+    }
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            width: videoWidth.toString(),
+            height: videoHeight.toString(),
+            videoId: '{{ .Video.VideoId }}',
+            playerVars: {
+                'origin': 'http://localhost:8083',
+                'controls': 2,
+                'rel': 0
+            },
+            events: {
+                'onReady': onPlayerReady
+            }
+        });
+    }
+
+    function onPlayerReady() {
+        ready = true;
+        videoDuration = player.getDuration();
+        update();
+    }
+
+    function update() {
+        if (!ready) {
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/admin/video/{{.Video.VideoId}}/single/{{.ViewId}}/dashboard_data',
+            data: {videoDuration: videoDuration},
+            success: function (data) {
+                updateHelper(data);
+            },
+            error: function () {
+                if (!errorOnce) {
+                    alert('Error while querying for data');
+                }
+                errorOnce = true;
+            },
+            dataType: 'json'
+        });
+    }
+
+    var genderGraph, ageGraph, emotionGraph, instantEmotionGraph, instantMoodGraph, instantEngagementGraph, instantViewedCountGraph;
+
+    function initialHelper() {
+        genderGraph = Morris.Donut({
+            element: 'graph-gender',
+            data: [
+                {label: 'Male', value: 0},
+                {label: 'Female', value: 0}
+            ],
+            colors: ['#26B99A', '#34495E'],
+            formatter: function (y) {
+                return y + "%"
+            }
+        });
+
+        ageGraph = Morris.Donut({
+            element: 'graph-age',
+            data: [
+                {label: 'Age <18', value: 0},
+                {label: 'Age 18-30', value: 0},
+                {label: 'Age 30-50', value: 0},
+                {label: 'Age >50', value: 0}
+            ],
+            colors: ['#26B99A', '#34495E', '#FF4000', '#0080FF'],
+            formatter: function (y) {
+                return y + "%"
+            }
+        });
+
+        emotionGraph = Morris.Donut({
+            element: 'graph-emotion',
+            data: [
+                {label: 'Happy', value: 0},
+                {label: 'Surprised', value: 0},
+                {label: 'Angry', value: 0},
+                {label: 'Disgusted', value: 0},
+                {label: 'Afraid', value: 0},
+                {label: 'Sad', value: 0}
+            ],
+            colors: ['#26B99A', '#34495E', '#FF4000', '#0080FF', '#009900', '#CC33FF'],
+            formatter: function (y) {
+                return y
+            }
+        });
+
+        instantEmotionGraph = Morris.Line({
+            element: 'graph-instant-emotion',
+            data: [],
+            xkey: 'x',
+            ykeys: ['a', 'b', 'c', 'd', 'e', 'f'],
+            labels: ['Happy', 'Surprised', 'Angry', 'Disgusted', 'Afraid', 'Sad'],
+            hideHover: true,
+            hoverCallback: function (index, options, content, row) {
+                var str = "Time: " + row.x.toFixed(2) + "<br>";
+                str += "Happy = " + row.a.toFixed(2) + "<br>";
+                str += "Surprised = " + row.b.toFixed(2) + "<br>";
+                str += "Angry = " + row.c.toFixed(2) + "<br>";
+                str += "Disgusted = " + row.d.toFixed(2) + "<br>";
+                str += "Afraid = " + row.e.toFixed(2) + "<br>";
+                str += "Sad = " + row.f.toFixed(2);
+                return str;
+            }
+        });
+
+        instantMoodGraph = Morris.Line({
+            element: 'graph-instant-mood',
+            data: [],
+            xkey: 'x',
+            ykeys: ['a'],
+            labels: ['Mood'],
+            hideHover: true,
+            hoverCallback: function (index, options, content, row) {
+                var str = "Time: " + row.x.toFixed(2) + "<br>";
+                str += "Mood = " + row.a.toFixed(2);
+                return str;
+            }
+        });
+
+        instantEngagementGraph = Morris.Line({
+            element: 'graph-instant-engagement',
+            data: [],
+            xkey: 'x',
+            ykeys: ['a'],
+            labels: ['Engagement'],
+            hideHover: true,
+            hoverCallback: function (index, options, content, row) {
+                var str = "Time: " + row.x.toFixed(2) + "<br>";
+                str += "Engagement = " + row.a.toFixed(2);
+                return str;
+            }
+        });
+
+        instantViewedCountGraph = Morris.Line({
+            element: 'graph-instant-viewed-count',
+            data: [],
+            xkey: 'x',
+            ykeys: ['a'],
+            labels: ['Viewed Count'],
+            hideHover: true,
+            hoverCallback: function (index, options, content, row) {
+                var str = "Time: " + row.x.toFixed(2) + "<br>";
+                str += "Viewed count = " + row.a;
+                return str;
+            }
+        });
+    }
+
+    function updateHelper(newData) {
+        if (newData === null) {
+            return
+        }
+
+        if (genderGraph === undefined || genderGraph === null) {
+            initialHelper();
+        }
+
+        $('#top-1').html(newData.totalViews.toString());
+        $('#top-2').html(newData.uniqueVisitors.toString());
+        if (!newData.avgViewDurationPresent) {
+            $('#top-3').html('NA');
+        } else {
+            $('#top-3').html(newData.avgViewDuration.toString() + ' s');
+        }
+        $('#top-4').html(((1 - newData.stats[7]) * 100).toFixed(2) + '%');
+        $('#top-5').html((newData.stats[0] * 100).toFixed(2) + '%');
+
+        var genderCount = newData.maleCount + newData.femaleCount;
+        var malePercentage, femalePercentage;
+        if (genderCount === 0) {
+            malePercentage = 0;
+            femalePercentage = 0;
+        } else {
+            malePercentage = (newData.maleCount * 100) / (newData.maleCount + newData.femaleCount);
+            femalePercentage = 100 - malePercentage;
+        }
+
+        genderGraph.setData([
+            {label: 'Male', value: Number(malePercentage.toFixed(2))},
+            {label: 'Female', value: Number(femalePercentage.toFixed(2))}
+        ]);
+
+        var totalAgeCount = newData.ageCounts[0] + newData.ageCounts[1] + newData.ageCounts[2] + newData.ageCounts[3];
+        var ageCount1, ageCount2, ageCount3, ageCount4;
+        if (totalAgeCount === 0) {
+            ageCount1 = 0;
+            ageCount2 = 0;
+            ageCount3 = 0;
+            ageCount4 = 0;
+        } else {
+            ageCount1 = (newData.ageCounts[0] * 100) / totalAgeCount;
+            ageCount2 = (newData.ageCounts[1] * 100) / totalAgeCount;
+            ageCount3 = (newData.ageCounts[2] * 100) / totalAgeCount;
+            ageCount4 = 100 - (ageCount1 + ageCount2 + ageCount3);
+        }
+
+        ageCount1 = Number(ageCount1.toFixed(2));
+        ageCount2 = Number(ageCount2.toFixed(2));
+        ageCount3 = Number(ageCount3.toFixed(2));
+        ageCount4 = Number(ageCount4.toFixed(2));
+
+        ageGraph.setData([
+            {label: 'Age <18', value: ageCount1},
+            {label: 'Age 18-30', value: ageCount2},
+            {label: 'Age 30-50', value: ageCount3},
+            {label: 'Age >50', value: ageCount4}
+        ]);
+
+        emotionGraph.setData([
+            {label: 'Happy', value: Number(newData.stats[1].toFixed(2))},
+            {label: 'Surprised', value: Number(newData.stats[2].toFixed(2))},
+            {label: 'Angry', value: Number(newData.stats[3].toFixed(2))},
+            {label: 'Disgusted', value: Number(newData.stats[4].toFixed(2))},
+            {label: 'Afraid', value: Number(newData.stats[5].toFixed(2))},
+            {label: 'Sad', value: Number(newData.stats[6].toFixed(2))}
+        ]);
+
+        var emotionData = [];
+        var moodData = [];
+        var engagementData = [];
+        var viewedCountData = [];
+
+        var keyString, value;
+        var key;
+
+        for (keyString in newData.instantStats) {
+            if (newData.instantStats.hasOwnProperty(keyString)) {
+                key = Number(keyString);
+                value = newData.instantStats[keyString];
+
+                emotionData.push({
+                    x: Number(key),
+                    a: value[1],
+                    b: value[2],
+                    c: value[3],
+                    d: value[4],
+                    e: value[5],
+                    f: value[6]
+                });
+
+                moodData.push({
+                    x: Number(key),
+                    a: value[0] * 100
+                });
+
+                engagementData.push({
+                    x: Number(key),
+                    a: (1 - value[7]) * 100
+                });
+            }
+        }
+
+        for (keyString in newData.instantViewedCount) {
+            if (newData.instantViewedCount.hasOwnProperty(keyString)) {
+                key = Number(keyString);
+                value = newData.instantViewedCount[keyString];
+
+                viewedCountData.push({
+                    x: Number(key),
+                    a: value
+                });
+            }
+        }
+
+        instantEmotionGraph.setData(emotionData);
+        instantMoodGraph.setData(moodData);
+        instantEngagementGraph.setData(engagementData);
+        instantViewedCountGraph.setData(viewedCountData);
+
+//      $('.hidden-class').removeClass('hidden');
+    }
+
+    window.addEventListener('load', init, false);
+
+    $('.refresh-link').click(function() {
+        update();
+    });
+
+    var interval = setInterval(update, 60 * 1000);
+</script>
+</body>
+
+</html>
